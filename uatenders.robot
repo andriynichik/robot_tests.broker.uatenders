@@ -8,12 +8,16 @@ Library  uatenders_service.py
  
 ${locator.title}                                                xpath=(//div[@class='col-md-12']/h2)
 ${locator.description}                                          xpath=(//div[@class='col-md-12']/p)
+${locator.questions[0].title}                                   xpath=(//span[@class='item-questions.title'])
+${locator.questions[0].description}                             xpath=(//div[@class='bs-callout bs-callout-warning']/p)
+${locator.questions[0].date}                                    xpath=(//div[@class='bs-callout bs-callout-warning']/h4/small)[1]
+${locator.questions[0].answer}                                  xpath=(//div[@class='bs-callout bs-callout-success']/p)
 ${locator.minimalStep.amount}                                   xpath=(//table[@class='clean-table']/tbody/tr[5]/td)[1]
 ${locator.value.amount}                                         xpath=(//table[@class='clean-table']/tbody/tr[4]/td)[1]
 ${locator.value.currency}                                       xpath=(//table[@class='clean-table']/tbody/tr[4]/td)[1]
 ${locator.value.valueAddedTaxIncluded}                          xpath=(//table[@class='clean-table']/tbody/tr[4]/td)[1]
 ${locator.tenderId}                                             xpath=(//table[@class='clean-table']/tbody/tr[2]/td)[1]
-${locator.procuringEntity.name}                                 xpath=(//table[@class='table table-striped table-bordered']/tbody/tr[1]/td)[4]
+${locator.procuringEntity.name}                                 xpath=(//td[@class='item-procuringEntity.name'])
 ${locator.enquiryPeriod.startDate}                              xpath=(//td[@class="enquiryPeriod"]/span[1])
 ${locator.enquiryPeriod.endDate}                                xpath=(//td[@class="enquiryPeriod"]/span[2])
 ${locator.tenderPeriod.startDate}                               xpath=(//td[@class="tenderPeriod"]/span[1])
@@ -24,16 +28,16 @@ ${locator.items[0].deliveryLocation.latitude}                   xpath=//td[(@cla
 ${locator.items[0].deliveryLocation.longitude}                  xpath=//td[(@class='item-deliveryLocation.longitude')]
 ${locator.items[0].unit.code}                                   xpath=(//td[@class='item-amount'])
 ${locator.items[0].unit.name}                                   xpath=(//td[@class='item-amount'])
-${locator.items[0].deliveryAddress.postalCode}                  xpath=(//td[@class='item-deliveryAddress'])
-${locator.items[0].deliveryAddress.countryName}                 xpath=(//td[@class='item-deliveryAddress'])
-${locator.items[0].deliveryAddress.region}                      xpath=(//td[@class='item-deliveryAddress'])
-${locator.items[0].deliveryAddress.locality}                    xpath=(//td[@class='item-deliveryAddress'])
-${locator.items[0].deliveryAddress.streetAddress}               xpath=(//td[@class='item-deliveryAddress'])
+${locator.items[0].deliveryAddress.postalCode}                  xpath=(//span[@class='item-deliveryAddress.postalCode'])
+${locator.items[0].deliveryAddress.countryName}                 xpath=(//span[@class='item-deliveryAddress.countryName'])
+${locator.items[0].deliveryAddress.region}                      xpath=(//span[@class='item-deliveryAddress.region'])
+${locator.items[0].deliveryAddress.locality}                    xpath=(//span[@class='item-deliveryAddress.locality'])
+${locator.items[0].deliveryAddress.streetAddress}               xpath=(//span[@class='item-deliveryAddress.streetAddress'])
 ${locator.items[0].deliveryDate.endDate}                        xpath=(//td[@class='item-delivery_period'])
-${locator.items[0].classification.scheme}                       xpath=(//span[@class='item-classification.scheme'])
+${locator.items[0].classification.scheme}                       xpath=(//span[@class=' item-classification.scheme '])
 ${locator.items[0].classification.id}                           xpath=(//td[@class='item-cpv'])
 ${locator.items[0].classification.description}                  xpath=(//td[@class='item-cpv'])
-${locator.items[0].additionalClassifications[0].scheme}         xpath=(//span[@class='item-additionalClassifications.scheme'])
+${locator.items[0].additionalClassifications[0].scheme}         xpath=(//span[@class=' item-additionalClassifications.scheme '])
 ${locator.items[0].additionalClassifications[0].id}             xpath=(//td[@class='item-dkpp'])
 ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@class='item-dkpp'])
  
@@ -209,8 +213,10 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
 
 отримати інформацію про value.valueAddedTaxIncluded
   ${return_value}=   Отримати текст із поля і показати на сторінці   value.valueAddedTaxIncluded
-  [return]  ${return_value.split(' ')[2]}
-
+  ${return_value}=   convert to string     ${return_value.split(' ')[3]}
+  ${return_value}=   convert_uatenders_string_to_common_string    ${return_value}
+  ${return_value}=   Convert To Boolean   ${return_value}
+  [return]  ${return_value}
 
 отримати інформацію про description
   ${return_value}=   Отримати текст із поля і показати на сторінці   description
@@ -226,7 +232,8 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   [return]  ${return_value}
 
 отримати інформацію про procuringEntity.name
-  Fail  Немає такого поля при перегляді
+  ${return_value}=   Отримати текст із поля і показати на сторінці   procuringEntity.name
+  [return]  ${return_value}
 
 Change_date_to_month
   [Arguments]  @{ARGUMENTS}
@@ -303,7 +310,7 @@ Change_date_to_month
 
 Отримати інформацію про items[0].deliveryDate.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryDate.endDate
-  [return]  ${return_value.split(' ',4)[4]}
+  [return]  ${return_value.split(' ')[1]}
 
 
 отримати інформацію про items[0].deliveryLocation.latitude
@@ -315,38 +322,39 @@ Change_date_to_month
 
 Отримати інформацію про items[0].deliveryAddress.countryName
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.countryName
-  ${return_value}=   Remove String   ${return_value.split(', ')[1]}  ,
+  ${return_value}=   Remove String   ${return_value}  ,
   ${return_value}=   Run keyword if    '${return_value}' == 'Украина'   Convert To String  Україна
   [return]  ${return_value}
 
 
 отримати інформацію про items[0].deliveryAddress.postalCode
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.countryName
-  ${return_value}=   Remove String   ${return_value.split(', ')[0]}  ,
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.postalCode
+  ${return_value}=   Remove String   ${return_value}  ,
   [return]  ${return_value}
 
 
 отримати інформацію про items[0].deliveryAddress.region
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.countryName
-  ${return_value}=   Run keyword if    '${return_value.split(', ')[2]}' == 'Николаевская'   Convert To String  Миколаївська
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.region
+  ${return_value}=   Remove String   ${return_value}  ,
   [return]  ${return_value}
 
 
+
 отримати інформацію про items[0].deliveryAddress.locality
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.countryName
-  ${return_value}=   Remove String   ${return_value.split(', ')[2]}  ,
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.locality
+  ${return_value}=   Remove String   ${return_value}  ,
   [return]  ${return_value}
 
 
 отримати інформацію про items[0].deliveryAddress.streetAddress
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.countryName
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.streetAddress
 #  ${return_value}=   Get Substring    ${return_value}   46
-  [return]  ${return_value.split(', ')[3]}
+  [return]  ${return_value}
 
 
 отримати інформацію про items[0].classification.scheme
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.scheme
-  [return]  ${return_value.split(' ')[1]}
+  [return]  ${return_value}
 
 
 
@@ -356,13 +364,15 @@ Change_date_to_month
 
 
 отримати інформацію про items[0].classification.description
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.id
-  [return]  ${return_value.split(' ',1)[1]}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.description
+  ${return_value}=   Get Substring  ${return_value}   11
+  Run Keyword And Return If  '${return_value}' == 'Картонки'   Convert To String  Картонні коробки
+  [return]  ${return_value}
 
 
 отримати інформацію про items[0].additionalClassifications[0].scheme
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].scheme
-  [return]  ${return_value.split(' ')[1]}
+  [return]  ${return_value}
 
 
 отримати інформацію про items[0].additionalClassifications[0].id
@@ -390,30 +400,32 @@ Change_date_to_month
  
 
 
+Отримати посилання на аукціон для глядача
+  uatender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  Sleep  2
+  ${url}=          xpath=(//table[@class='clean-table']/tbody/tr[4]/td)[1]
+
 
 отримати інформацію про items[0].quantity
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
   ${return_value}=   Convert To Number   ${return_value.split(' ')[0]}
   [return]   ${return_value}
 
+отримати інформацію про questions[0].title
+  Click Element      xpath=(//ul[@class='nav nav-tabs']/li[2]/a)[1]
+  ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].title
+  [return]  ${return_value}
 
-Відповісти на питання
-  [Arguments]  @{ARGUMENTS}
+отримати інформацію про questions[0].description
+  ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].description
+  [return]  ${return_value}
 
-  [Documentation]
-  ...      ${ARGUMENTS[0]} = username
-  ...      ${ARGUMENTS[1]} = ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} = 0
-  ...      ${ARGUMENTS[3]} = answer_data
-  ${answer}=     Get From Dictionary  ${ARGUMENTS[3].data}  answer
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  uatender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Click Element      xpath=//*[text()='Вопросы']
-  Sleep  2
-  Click Element      xpath=(//*[text()='Ответить'])[last()]
-  Sleep  2
-  Input text         name=answer     ${answer}
-  Sleep  1
-  Click Element      xpath=//div[@class='form-group']/input[@class='btn btn-xs btn-default']
-  Capture Page Screenshot
+отримати інформацію про questions[0].date
+  ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].date
+  [return]  ${return_value}
+
+отримати інформацію про questions[0].answer
+  Click Element      xpath=(//ul[@class='nav nav-tabs']/li[2]/a)[1]
+  ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].answer
+  [return]  ${return_value}
 
