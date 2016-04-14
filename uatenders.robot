@@ -4,8 +4,8 @@ Library  String
 Library  DateTime
 Library  uatenders_service.py
 
+
 *** Variables ***
- 
 ${locator.title}                                                xpath=(//div[@class='col-md-12']/h2)
 ${locator.description}                                          xpath=(//div[@class='col-md-12']/p)
 ${locator.questions[0].title}                                   xpath=(//span[@class='item-questions.title'])
@@ -40,13 +40,10 @@ ${locator.items[0].classification.description}                  xpath=(//td[@cla
 ${locator.items[0].additionalClassifications[0].scheme}         xpath=(//span[@class=' item-additionalClassifications.scheme '])
 ${locator.items[0].additionalClassifications[0].id}             xpath=(//td[@class='item-dkpp'])
 ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@class='item-dkpp'])
- 
-
 
 
 *** Keywords ***
 Підготувати клієнт для користувача
-  
   [Arguments]  ${username}
   [Documentation]  Відкрити брaузер, створити обєкт api wrapper, тощо
 
@@ -122,13 +119,14 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ...    ${ARGUMENTS[1]} =  ${file_path}
   ...    ${ARGUMENTS[2]} =  ${TENDER_UAID}
   ${filepath}=   local_path_to_file   TestDocument.docx
-  uatender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Click Element     xpath=//*[text()='Редактировать']
   Sleep  2
   Choose File       id=1        ${filepath}
   Sleep  2
   Click Element     xpath=//input[@class='btn btn-lg btn-danger']
   Capture Page Screenshot
+
 
 Внести зміни в тендер
   [Arguments]  @{ARGUMENTS}
@@ -140,7 +138,7 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ${items}=         Get From Dictionary   ${INITIAL_TENDER_DATA.data}               items
   ${items_description}=   Get From Dictionary   ${items[0]}         description
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  uatender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep  2
   Click Element                      xpath=//*[text()='Редактировать']
   Sleep  2
@@ -149,14 +147,16 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Click Element                      xpath=//input[@class='btn btn-lg btn-danger']
   Capture Page Screenshot
 
+
 Оновити сторінку з тендером
   [Arguments]  @{ARGUMENTS}
   [Documentation]
   ...      ${ARGUMENTS[0]} =  username
   ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  uatender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  uatenders.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Reload Page
+
 
 Подати скаргу
   [Arguments]  @{ARGUMENTS}
@@ -185,7 +185,7 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Sleep  15
   Click Button    xpath=//button[@type='submit']
   sleep  1
-  
+
 
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
@@ -299,6 +299,7 @@ Change_date_to_month
   Click Element   xpath=//input[@class='btn btn-lg btn-danger']
   Wait Until Page Contains    [ТЕСТУВАННЯ]   10
 
+
 видалити позиції
   Fail  Немає можливості баг №493
 
@@ -339,7 +340,6 @@ Change_date_to_month
   [return]  ${return_value}
 
 
-
 отримати інформацію про items[0].deliveryAddress.locality
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.locality
   ${return_value}=   Remove String   ${return_value}  ,
@@ -355,7 +355,6 @@ Change_date_to_month
 отримати інформацію про items[0].classification.scheme
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.scheme
   [return]  ${return_value}
-
 
 
 отримати інформацію про items[0].classification.id
@@ -380,7 +379,6 @@ Change_date_to_month
   [return]  ${return_value.split(' ')[0]}
 
 
-
 отримати інформацію про items[0].additionalClassifications[0].description
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].description
   [return]  ${return_value.split(' ',1)[1]}
@@ -397,11 +395,11 @@ Change_date_to_month
   ${return_value}=   convert to string     ${return_value.split(' ')[1]}
   ${return_value}=   convert_uatenders_string_to_common_string    ${return_value}
   [return]   ${return_value}
- 
 
 
 Отримати посилання на аукціон для глядача
-  uatender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  [Arguments]  @{ARGUMENTS}
+  uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep  2
   ${url}=          xpath=(//table[@class='clean-table']/tbody/tr[4]/td)[1]
 
@@ -428,4 +426,3 @@ Change_date_to_month
   Click Element      xpath=(//ul[@class='nav nav-tabs']/li[2]/a)[1]
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].answer
   [return]  ${return_value}
-
