@@ -92,10 +92,10 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ${lots_title} =           Convert To string           testlot_title
   ${lots_desc} =            Convert To string           testlot_desc
   
-  ${dates}=                get_all_uatenders_dates
-  ${end_period_adjustments}=      Get From Dictionary         ${dates}        EndPeriod
-  ${start_receive_offers}=        Get From Dictionary         ${dates}        StartDate
-  ${end_receive_offers}=          Get From Dictionary         ${dates}        EndDate
+  ${dates}=                get_all_uatenders_dates  ${ARGUMENTS[1]}
+  ${end_period_adjustments}=      convert_datetime_for_delivery        ${dates['EndPeriod']}        
+  ${start_receive_offers}=        convert_datetime_for_delivery        ${dates['StartDate']}        
+  ${end_receive_offers}=          convert_datetime_for_delivery        ${dates['EndDate']}        
   ${postalCode}=           Get From Dictionary         ${items[0].deliveryAddress}     postalCode
   ${locality}=             Get From Dictionary         ${items[0].deliveryAddress}     locality
   ${region}=               Get From Dictionary         ${items[0].deliveryAddress}     region
@@ -112,7 +112,8 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/a
   Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/ul/li[1]/a
   Input text                          name=title    ${title}
-  Input text                          name=description     ${description} 
+  Input text                          name=description      ${description}
+
   Input text                          name=contact_name    ${proc_name} 
   Click Element                       name=tax_included
   
@@ -121,7 +122,7 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Input text                          name=enquiry_end_date     ${end_period_adjustments}
   Input text                          name=tender_start_date    ${start_receive_offers}
   Input text                          name=tender_end_date      ${end_receive_offers}
-  
+
   ## lots
   Input text                          name=lots[0][title]         ${lots_title} 
   Input text                          name=lots[0][amount]        ${budget}
