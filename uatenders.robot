@@ -557,7 +557,7 @@ Change_date_to_month
   ${url} =          Get Element Attribute     xpath=(//table[@class='clean-table']/tbody/tr[4]/td/a)[1]@href
   Log  ${url}
   [return]  ${url}
-  Sleep  2
+
 
 Отримати посилання на аукціон для учасника
   [Arguments]  @{ARGUMENTS}
@@ -565,7 +565,7 @@ Change_date_to_month
   ${url} =          Get Element Attribute     xpath=(//table[@class='clean-table']/tbody/tr[4]/td/a)[1]@href
   Log  ${url}
   [return]  ${url}
-  Sleep  2
+
 
 
 отримати інформацію про items[0].quantity
