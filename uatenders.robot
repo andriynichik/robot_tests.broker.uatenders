@@ -75,10 +75,11 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ${title}=                 Get From Dictionary         ${ARGUMENTS[1].data}               title
   ${description}=           Get From Dictionary         ${ARGUMENTS[1].data}                 description
   ${budget}=                Get From Dictionary         ${ARGUMENTS[1].data.value}           amount
- 
+  ${budget}=                Convert To String           ${budget}
   ${proc_name}=             Get From Dictionary         ${ARGUMENTS[1].data.procuringEntity}   name
 
   ${step_rate}=             Get From Dictionary         ${ARGUMENTS[1].data.minimalStep}       amount
+  ${step_rate} =            Convert To String           ${step_rate}
   ${items_description}=   Get From Dictionary   ${items[0]}         description
   ${quantity}=              Get From Dictionary         ${items[0]}         quantity
   ${countryName}=           Get From Dictionary         ${ARGUMENTS[1].data.procuringEntity.address}       countryName
