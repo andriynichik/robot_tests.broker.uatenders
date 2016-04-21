@@ -103,21 +103,25 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ${streetAddress}=        Get From Dictionary         ${items[0].deliveryAddress}     streetAddress
 
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
+  Maximize Browser Window
+  Sleep  1
+  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/a           20
   Sleep  1
   Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/a
+  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/ul/li[2]/a         20
+  Sleep  1
   Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/ul/li[2]/a
   Input text                          name=name   ${proc_name}
   Click Element                       xpath=//*[@type='submit']
   Sleep  5
-
+  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/a          20
   Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/a
+  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/ul/li[1]/a         20
   Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/ul/li[1]/a
   Input text                          name=title    ${title}
   Input text                          name=description      ${description}
-
   Input text                          name=contact_name    ${proc_name} 
   Click Element                       name=tax_included
-  
   ## dates
   Click Element                       name=enquiry_start_date
   Input text                          name=enquiry_end_date     ${end_period_adjustments}
@@ -125,33 +129,40 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Input text                          name=tender_end_date      ${end_receive_offers}
 
   ## lots
-  Input text                          name=lots[0][title]         ${lots_title} 
+  Input text                          name=lots[0][title]         ${lots_title}
+  Sleep  2 
   Input text                          name=lots[0][amount]        ${budget}
   Input text                          name=lots[0][description]   ${unit}
-  Sleep  7
+  Sleep  3
   Input text                          name=lots[0][minimal_step]                                     ${step_rate}
   Input Text                          name=lots[0][items][0][description]                            ${items_description}
   Input Text                          name=lots[0][items][0][quantity]                               ${quantity}
+  Wait Until Page Contains Element       name=lots[0][items][0][unit_id]
+  Click Element                       name=lots[0][items][0][unit_id]
+  Select From List                    xpath=//select[@name="lots[0][items][0][unit_id]"]          20
   Click Element                       name=lots[0][items][0][delivery_date_start]
   Click Element                       name=lots[0][items][0][delivery_date_end]                      
   Sleep  1
+    ## cpv
+  Input text                          name=lots[0][items][0][cpv]   ${cpv}
+  Wait Until Page Contains Element       xpath=//li[@class='ui-menu-item']
+  Click Element                       xpath=//li[@class='ui-menu-item']
+  Sleep  3
 
- 
+  Input text                          name=lots[0][items][0][dkpp]   ${dkpp_desc}
+
+  Wait Until Page Contains Element       xpath=(//li[@class='ui-menu-item'])[2]
+  Click Element                       xpath=(//li[@class='ui-menu-item'])[2]
+
   Input Text                          name=lots[0][items][0][postal_code]                         ${postalCode}
   Input Text                          name=lots[0][items][0][locality]                            ${locality}
   Input Text                          name=lots[0][items][0][delivery_address]                    ${streetAddress}
-  Click Element                       name=lots[0][items][0][unit_id]
-  Select From List                    xpath=//select[@name="lots[0][items][0][region_id]"]        1
-  Select From List                    xpath=//select[@name="lots[0][items][0][unit_id]"]          20
+  
+
+  
 
 
-  ## cpv
-  Input text                          name=lots[0][items][0][cpv]   ${cpv}
-  Click Element                       xpath=//li[@class='ui-menu-item']
-  Sleep  1
-  Input text                          name=lots[0][items][0][dkpp]   ${dkpp_desc}
-  Sleep  1
-  Click Element                       xpath=(//li[@class='ui-menu-item'])[2]
+
 
   Click Element                       xpath=//*[@type='submit']
   Sleep  5
