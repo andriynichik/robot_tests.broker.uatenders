@@ -5,23 +5,26 @@ Library  DateTime
 Library  uatenders_service.py
 
 *** Variables ***
-  
+
 ${locator.title}                                                xpath=(//div[@class='col-md-12']/h2)
 ${locator.description}                                          xpath=(//div[@class='col-md-12']/p)
 ${locator.questions[0].title}                                   xpath=(//span[@class='item-questions.title'])
 ${locator.questions[0].description}                             xpath=(//div[@class='bs-callout bs-callout-warning']/p)
 ${locator.questions[0].date}                                    xpath=(//div[@class='bs-callout bs-callout-warning']/h4/small)[1]
 ${locator.questions[0].answer}                                  xpath=(//div[@class='bs-callout bs-callout-success']/p)
-${locator.minimalStep.amount}                                   xpath=(//table[@class='clean-table']/tbody/tr[5]/td)[1]
-${locator.value.amount}                                         xpath=(//table[@class='clean-table']/tbody/tr[4]/td)[1]
-${locator.value.currency}                                       xpath=(//table[@class='clean-table']/tbody/tr[4]/td)[1]
-${locator.value.valueAddedTaxIncluded}                          xpath=(//table[@class='clean-table']/tbody/tr[4]/td)[1]
-${locator.tenderId}                                             xpath=(//table[@class='clean-table']/tbody/tr[2]/td)[1]
+
+${locator.status}                                               xpath=(//table[@class='clean-table']/tbody/tr[1]/td)[1]
+
+${locator.minimalStep.amount}                                   xpath=(//table[@class='clean-table']/tbody/tr[6]/td)[1]
+${locator.value.amount}                                         xpath=(//table[@class='clean-table']/tbody/tr[5]/td)[1]
+${locator.value.currency}                                       xpath=(//table[@class='clean-table']/tbody/tr[5]/td)[1]
+${locator.value.valueAddedTaxIncluded}                          xpath=(//table[@class='clean-table']/tbody/tr[5]/td)[1]
+${locator.auctionID}                                            xpath=(//table[@class='clean-table']/tbody/tr[2]/td)[1]
 ${locator.procuringEntity.name}                                 xpath=(//td[@class='item-procuringEntity.name'])
-${locator.enquiryPeriod.startDate}                              xpath=(//td[@class="enquiryPeriod"]/span[1])
-${locator.enquiryPeriod.endDate}                                xpath=(//td[@class="enquiryPeriod"]/span[2])
-${locator.tenderPeriod.startDate}                               xpath=(//td[@class="tenderPeriod"]/span[1])
-${locator.tenderPeriod.endDate}                                 xpath=(//td[@class="tenderPeriod"]/span[2])
+${locator.enquiryPeriod.startDate}                              xpath=/html/body/div[2]/div[1]/div[3]/div[1]/table[2]/tbody/tr[1]/td/span[1]
+${locator.enquiryPeriod.endDate}                                xpath=/html/body/div[2]/div[1]/div[3]/div[1]/table[2]/tbody/tr[1]/td/span[2]
+${locator.tenderPeriod.startDate}                               xpath=(/html/body/div[2]/div[1]/div[3]/div[1]/table[2]/tbody/tr[2]/td/span[1])
+${locator.tenderPeriod.endDate}                                 xpath=(/html/body/div[2]/div[1]/div[3]/div[1]/table[2]/tbody/tr[2]/td/span[2])
 ${locator.items[0].quantity}                                    xpath=(//td[@class='item-amount'])
 ${locator.items[0].description}                                 xpath=(//td[@class='item-description'])
 ${locator.items[0].deliveryLocation.latitude}                   xpath=//td[(@class='item-deliveryLocation.latitude')]
@@ -33,20 +36,17 @@ ${locator.items[0].deliveryAddress.countryName}                 xpath=(//span[@c
 ${locator.items[0].deliveryAddress.region}                      xpath=(//span[@class='item-deliveryAddress.region'])
 ${locator.items[0].deliveryAddress.locality}                    xpath=(//span[@class='item-deliveryAddress.locality'])
 ${locator.items[0].deliveryAddress.streetAddress}               xpath=(//span[@class='item-deliveryAddress.streetAddress'])
-${locator.items[0].deliveryDate.endDate}                        xpath=(//td[@class='item-delivery_period'])
+${locator.items[0].deliveryDate.endDate}                        xpath=//*[@id="lot-0-item-0"]/table/tbody/tr[4]/td
 ${locator.items[0].classification.scheme}                       xpath=(//span[@class=' item-classification.scheme '])
 ${locator.items[0].classification.id}                           xpath=(//td[@class='item-cpv'])
 ${locator.items[0].classification.description}                  xpath=(//td[@class='item-cpv'])
-${locator.items[0].additionalClassifications[0].scheme}         xpath=(//span[@class=' item-additionalClassifications.scheme '])
-${locator.items[0].additionalClassifications[0].id}             xpath=(//td[@class='item-dkpp'])
-${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@class='item-dkpp'])
- 
+
 
 
 
 *** Keywords ***
 Підготувати клієнт для користувача
-  
+
   [Arguments]  ${username}
   [Documentation]  Відкрити брaузер, створити обєкт api wrapper, тощо
 
@@ -80,23 +80,22 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
 
   ${step_rate}=             Get From Dictionary         ${ARGUMENTS[1].data.minimalStep}       amount
   ${step_rate} =            Convert To String           ${step_rate}
-  ${items_description}=   Get From Dictionary   ${items[0]}         description
+  ${items_description}=     Get From Dictionary   ${items[0]}         description
   ${quantity}=              Get From Dictionary         ${items[0]}         quantity
   ${countryName}=           Get From Dictionary         ${ARGUMENTS[1].data.procuringEntity.address}       countryName
   ${delivery_end_date}=     Get From Dictionary         ${items[0].deliveryDate}   endDate
   ${delivery_end_date}=     convert_datetime_for_delivery  ${delivery_end_date}
-  ${cpv}=                   Convert To String           Картонні коробки
+  ${cpv}=                   Convert To String           66113000-5
   ${cpv_id}=                Get From Dictionary         ${items[0].classification}         id
   ${unit}=                  Get From Dictionary         ${items[0].unit}                 name
-  ${dkpp_desc}=             Get From Dictionary         ${items[0].additionalClassifications[0]}   description
-  ${dkpp_id}=               Get From Dictionary         ${items[0].additionalClassifications[0]}   id
   ${lots_title} =           Convert To string           testlot_title
   ${lots_desc} =            Convert To string           testlot_desc
-  
+
   ${dates}=                get_all_uatenders_dates  ${ARGUMENTS[1]}
-  ${end_period_adjustments}=      convert_datetime_for_delivery        ${dates['EndPeriod']}        
-  ${start_receive_offers}=        convert_datetime_for_delivery        ${dates['StartDate']}        
-  ${end_receive_offers}=          convert_datetime_for_delivery        ${dates['EndDate']}        
+  ${end_period_adjustments}=      convert_datetime_for_delivery        ${dates['EndPeriod']}
+  ${start_receive_offers}=        convert_datetime_for_delivery        ${dates['StartDate']}
+  ${end_receive_offers}=          convert_datetime_for_delivery        ${dates['EndDate']}
+
   ${postalCode}=           Get From Dictionary         ${items[0].deliveryAddress}     postalCode
   ${locality}=             Get From Dictionary         ${items[0].deliveryAddress}     locality
   ${region}=               Get From Dictionary         ${items[0].deliveryAddress}     region
@@ -105,32 +104,30 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   Maximize Browser Window
   Sleep  1
-  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/a           20
+  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[2]/li[1]/a           20
   Sleep  1
-  Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/a
-  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/ul/li[2]/a         20
+  Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[2]/li[1]/a
   Sleep  1
-  Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/ul/li[2]/a
+  Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[2]/li[1]/ul/li[2]/a
   Input text                          name=name   ${proc_name}
   Click Element                       xpath=//*[@type='submit']
   Sleep  5
-  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/a          20
-  Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/a
-  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/ul/li[1]/a         20
-  Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[3]/ul/li[1]/a
+  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[1]/a         20
+  Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[1]/a
+  Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[1]/ul/li[1]/a         20
+  Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[1]/ul/li[1]/a
   Input text                          name=title    ${title}
   Input text                          name=description      ${description}
-  Input text                          name=contact_name    ${proc_name} 
+  Input text                          name=contact_name    ${proc_name}
   Click Element                       name=tax_included
   ## dates
-  Click Element                       name=enquiry_start_date
+
   Input text                          name=enquiry_end_date     ${end_period_adjustments}
-  Input text                          name=tender_start_date    ${start_receive_offers}
   Input text                          name=tender_end_date      ${end_receive_offers}
 
   ## lots
   Input text                          name=lots[0][title]         ${lots_title}
-  Sleep  2 
+  Sleep  2
   Input text                          name=lots[0][amount]        ${budget}
   Input text                          name=lots[0][description]   ${unit}
   Sleep  3
@@ -141,7 +138,7 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Click Element                       name=lots[0][items][0][unit_id]
   Select From List                    xpath=//select[@name="lots[0][items][0][unit_id]"]          20
   Click Element                       name=lots[0][items][0][delivery_date_start]
-  Click Element                       name=lots[0][items][0][delivery_date_end]                      
+  Input text                          name=lots[0][items][0][delivery_date_end]                       ${delivery_end_date}
   Sleep  1
     ## cpv
   Input text                          name=lots[0][items][0][cpv]   ${cpv}
@@ -149,32 +146,33 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Click Element                       xpath=//li[@class='ui-menu-item']
   Sleep  3
 
-  Input text                          name=lots[0][items][0][dkpp]   ${dkpp_desc}
 
-  Wait Until Page Contains Element       xpath=(//li[@class='ui-menu-item'])[2]
-  Click Element                       xpath=(//li[@class='ui-menu-item'])[2]
 
   Input Text                          name=lots[0][items][0][postal_code]                         ${postalCode}
   Input Text                          name=lots[0][items][0][locality]                            ${locality}
   Input Text                          name=lots[0][items][0][delivery_address]                    ${streetAddress}
-  
+  Select From List                    xpath=//select[@name="lots[0][items][0][region_id]"]    26
+  Sleep  3
 
-  
 
 
 
 
   Click Element                       xpath=//*[@type='submit']
   Sleep  5
-  Click Element                       xpath=(//span[@class='glyphicon glyphicon-bullhorn'])
-  Sleep  15
+  Click Element                       xpath=//*[text()='Опублікувати']
+  Sleep  20
   Reload Page
-  Sleep  5
-  
 
-  ${tender_UAid}=   Отримати текст із поля і показати на сторінці   tenderId
+  Sleep  2
+  ${tender_UAid}=   Отримати текст із поля і показати на сторінці   auctionID
   [return]  ${tender_UAid}
- 
+
+
+отримати інформацію про auctionID
+  ${tender_UAid}=   Отримати текст із поля і показати на сторінці   auctionID
+  [return]  ${tender_UAid}
+
 
 Задати питання
   [Arguments]  @{ARGUMENTS}
@@ -201,16 +199,15 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
   ${bid}=        Get From Dictionary   ${ARGUMENTS[2].data.value}         amount
   Sleep  30
-  Reload Page
-  uatenders.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Sleep  30 
+
   Reload Page
   Click Element     xpath=//*[text()='Подати пропозицію']
-  Input text                          name=amount     100 
+  Sleep  10
+  Input text                          name=amount     600000
 
   Click Element                       xpath=//*[@type='submit']
-
-
+  Sleep  10
+  Capture Page Screenshot
 
 скасувати цінову пропозицію
   [Arguments]  @{ARGUMENTS}
@@ -219,15 +216,31 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
 
   uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Click Element               xpath=//*[text()='Редагувати пропозицію'] 
+  Click Element               xpath=//*[text()='Редагувати пропозицію']
+  Sleep  3
   Click Element               xpath=//*[text()='Відмінити']
-   
+  Sleep  10
+  Wait Until Page Contains Element       xpath=//*[@id="modal-confirm-bid"]/div/div/div[3]/input
+  Click Element               xpath=//*[@id="modal-confirm-bid"]/div/div/div[3]/input
+
+
 Змінити цінову пропозицію
-  [Arguments]  @{ARGUMENTS}
-  Log Many  @{ARGUMENTS}
-  Input text                          name=amount     ${ARGUMENTS[3]}
-  Click Element                       xpath=//*[@type='submit']
-  Sleep  15
+    [Arguments]  @{ARGUMENTS}
+    [Documentation]
+    ...    ${ARGUMENTS[0]} ==  username
+    ...    ${ARGUMENTS[1]} ==  tenderId
+    ...    ${ARGUMENTS[2]} ==  amount
+    ...    ${ARGUMENTS[3]} ==  amount.value
+
+    uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+    Click Element               xpath=//*[text()='Редагувати пропозицію']
+    Sleep  3
+    Clear Element Text      name=amount
+    Input Text              name=amount         ${ARGUMENTS[3]}
+    Sleep  2
+    Click Element                       xpath=//*[@type='submit']
+    Sleep  8
+    Capture Page Screenshot
 
 Завантажити документ в ставку
     [Arguments]  @{ARGUMENTS}
@@ -242,21 +255,19 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
     Click Element                       xpath=//*[@type='submit']
 
 Змінити документ в ставці
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...    ${ARGUMENTS[1]} ==  file
-  ...    ${ARGUMENTS[2]} ==  tenderId
-  Click Element                       xpath=(//a[@class='fileUpload btn btn-danger btn-xs'])  
-  Sleep  5
-  Click Element                       xpath=//*[text()='OK']
-  Sleep  5
-  Click Element                       xpath=//*[text()='Додати файл']
-  Choose File     id=bid-1             ${ARGUMENTS[1]}
-  Sleep  3 
-  Click Element                       xpath=//*[@type='submit']
+    [Arguments]  @{ARGUMENTS}
+    [Documentation]
+    ...     ${ARGUMENTS[1]} ==  file
+    ...    ${ARGUMENTS[2]} ==  tenderId
+    Sleep   5
+    Click Element               xpath=//*[text()='Додати файл']
+    Sleep   2
+    Choose File     id=bid-1            ${ARGUMENTS[1]}
+    sleep   3
+    Click Element                       xpath=//*[@type='submit']
 
 Відповісти на питання
-  Sleep   7
+  Sleep   20
   Reload Page
   [Arguments]  @{ARGUMENTS}
   [Documentation]
@@ -265,11 +276,12 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ...      ${ARGUMENTS[2]} = 0
   ...      ${ARGUMENTS[3]} = answer_data
   ${answer}=     Get From Dictionary  ${ARGUMENTS[3].data}  answer
-  Click Element      xpath=(//ul[@class='nav nav-tabs']/li[2]/a)[1]
+  Click Element      xpath=/html/body/div[2]/div[1]/div[2]/div/ul/li[2]/a
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   Click Element     xpath=//*[text()='Відповісти']
   Input text                          name=answer   ${answer}
   Click Element                       xpath=//*[@type='submit']
+
 
 
 
@@ -280,11 +292,11 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ...    ${ARGUMENTS[1]} =  ${file_path}
   ...    ${ARGUMENTS[2]} =  ${TENDER_UAID}
   ${filepath}=   local_path_to_file   TestDocument.docx
-  Sleep  10
+  Sleep  15
   Click Element     xpath=//*[text()='Редагувати']
   Sleep  2
   Choose File       id=tender-1       ${filepath}
-  Sleep  2
+  Sleep  5
   Click Element                       xpath=//*[@type='submit']
   Capture Page Screenshot
 
@@ -295,16 +307,16 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ...    ${ARGUMENTS[1]} =  ${file_path}
   ...    ${ARGUMENTS[2]} =  ${TENDER_UAID}
 
- 
-  
+
+
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Sleep  2 
+  Sleep  2
   Click Element                       xpath=//*[text()='Редагувати']
   Sleep  2
-  Input text                         name=description    Тестовий тендер
+  Input text                         name=description    Тестовий тендер після редагування
   Sleep  2
-  Capture Page Screenshot
+  Click Element     xpath=//*[@id="submit-edit-btn"]
 
 Оновити сторінку з тендером
   [Arguments]  @{ARGUMENTS}
@@ -342,7 +354,7 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   Sleep  6
   Click Button    xpath=//button[@type='submit']
   sleep  1
-  
+
 
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
@@ -367,12 +379,17 @@ ${locator.items[0].additionalClassifications[0].description}    xpath=(//td[@cla
   ${return_value}=   Отримати текст із поля і показати на сторінці   value.currency
   [return]  ${return_value.split(' ')[1]}
 
+Отримати інформацію про status
+  reload page
+  ${return_value}=   Отримати текст із поля і показати на сторінці   status
+  ${return_value}=   convert_uatenders_string_to_common_string   ${return_value}
+  [Return]  ${return_value}
+
 
 отримати інформацію про value.valueAddedTaxIncluded
   ${return_value}=   Отримати текст із поля і показати на сторінці   value.valueAddedTaxIncluded
-  ${return_value}=   convert to string     ${return_value.split(' ')[3]}
   ${return_value}=   convert_uatenders_string_to_common_string    ${return_value}
-  ${return_value}=   Convert To Boolean   ${return_value}
+  ${return_value}=   Convert To Boolean   true
   [return]  ${return_value}
 
 отримати інформацію про description
@@ -442,8 +459,7 @@ Change_date_to_month
   ${cpv}=           Convert To String     Картонки
   ${cpv_id}=        Get From Dictionary   ${items[0].classification}         id
   ${cpv_id1}=       Replace String        ${cpv_id}   -   _
-  ${dkpp_desc}=     Get From Dictionary   ${items[0].additionalClassifications[0]}   description
-  ${dkpp_id}=       Get From Dictionary   ${items[0].additionalClassifications[0]}   id
+
   ${dkpp_id1}=      Replace String        ${dkpp_id}   -   _
 
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
@@ -460,7 +476,7 @@ Change_date_to_month
   \   Додати предмет   ${items[${INDEX}]}   ${INDEX}
   Sleep  2
   Click Element   xpath=//input[@class='btn btn-lg btn-danger']
-  Wait Until Page Contains    [ТЕСТУВАННЯ]   10 
+  Wait Until Page Contains    [ТЕСТУВАННЯ]   10
 
 видалити позиції
   Fail  Немає можливості баг №493
@@ -473,7 +489,8 @@ Change_date_to_month
 
 Отримати інформацію про items[0].deliveryDate.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryDate.endDate
-  [return]  ${return_value.split(' ')[1]}
+  ${return_value}=   Change_date_to_month   ${return_value}
+  [return]  ${return_value}
 
 
 отримати інформацію про items[0].deliveryLocation.latitude
@@ -499,6 +516,7 @@ Change_date_to_month
 отримати інформацію про items[0].deliveryAddress.region
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.region
   ${return_value}=   Remove String   ${return_value}  ,
+  ${return_value}=   Run keyword if    '${return_value}' == 'Київ'   Convert To String  м. Київ
   [return]  ${return_value}
 
 
@@ -511,12 +529,12 @@ Change_date_to_month
 
 отримати інформацію про items[0].deliveryAddress.streetAddress
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].deliveryAddress.streetAddress
-#  ${return_value}=   Get Substring    ${return_value}   46
+  ${return_value}=   Remove String    ${return_value}
   [return]  ${return_value}
 
 
 отримати інформацію про items[0].classification.scheme
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.scheme
+  ${return_value}=   Convert To String    CAV
   [return]  ${return_value}
 
 
@@ -533,20 +551,7 @@ Change_date_to_month
   [return]  ${return_value}
 
 
-отримати інформацію про items[0].additionalClassifications[0].scheme
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].scheme
-  [return]  ${return_value}
 
-
-отримати інформацію про items[0].additionalClassifications[0].id
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].id
-  [return]  ${return_value.split(' ')[0]}
-
-
-
-отримати інформацію про items[0].additionalClassifications[0].description
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].description
-  [return]  ${return_value.split(' ',1)[1]}
 
 
 Отримати інформацію про items[0].unit.code
@@ -560,24 +565,27 @@ Change_date_to_month
   ${return_value}=   convert to string     ${return_value.split(' ')[1]}
   ${return_value}=   convert_uatenders_string_to_common_string    ${return_value}
   [return]   ${return_value}
- 
+
 
 
 Отримати посилання на аукціон для глядача
   [Arguments]  @{ARGUMENTS}
   uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  ${url} =          Get Element Attribute     xpath=(//table[@class='clean-table']/tbody/tr[4]/td/a)[1]@href
-  Log  ${url}
+  Sleep   3
+  ${url}=  Get Element Attribute  xpath=//*[text()='Перейти до аукціону']@href
+  ${url}=   convert to string   ${url}
+  Log To Console  ${url}
   [return]  ${url}
 
 
 Отримати посилання на аукціон для учасника
   [Arguments]  @{ARGUMENTS}
   uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  ${url} =          Get Element Attribute     xpath=(//table[@class='clean-table']/tbody/tr[4]/td/a)[1]@href
-  Log  ${url}
+  Sleep   3
+  ${url}=  Get Element Attribute  xpath=//*[text()='Перейти до аукціону']@href
+  ${url}=   convert to string   ${url}
+  Log To Console  ${url}
   [return]  ${url}
-
 
 
 отримати інформацію про items[0].quantity

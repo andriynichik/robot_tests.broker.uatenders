@@ -16,6 +16,9 @@ def convert_uatenders_string_to_common_string(string):
         u"килограммы": u"кілограм",
         u"ПДВ)": True,
         u"Картонки": u"Картонні коробки",
+        u"Період уточнень": u"active.enquiries",
+        u"Очікування пропозицій": u"active.tendering",
+        u"Період аукціону": u"active.auction",
     }.get(string, string)
 
 def convert_datetime_for_delivery(isodate):
