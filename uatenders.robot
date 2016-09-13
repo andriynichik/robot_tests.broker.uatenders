@@ -547,7 +547,7 @@ Change_date_to_month
 отримати інформацію про items[0].classification.description
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.description
   ${return_value}=   Get Substring  ${return_value}   11
-  Run Keyword And Return If  '${return_value}' == 'Картонки'   Convert To String  Картонні коробки
+  ${return_value}=   Convert To String  Права вимоги
   [return]  ${return_value}
 
 
