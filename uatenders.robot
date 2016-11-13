@@ -660,6 +660,50 @@ Change_date_to_month
     Click Element                       xpath=//*[@type='submit']
 
     sleep   10
+    Click Element                     xpath=(//a[@class='btn btn-xm btn-success'])
 
 
 
+Підтвердити підписання контракту
+    [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
+    ${filepyth}=                              get_file_path
+    uatenders.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
+    Click Element     xpath=/html/body/div/div[1]/div[2]/div/ul/li[3]/a
+    sleep   5
+    Click Element     xpath=/html/body/div/div/table/tbody/tr/td[2]/a
+    sleep   2
+    Input text                          name=contract_number   ${contract_num}
+    Sleep   2
+    Choose File     id=contract-0            ${filepyth}
+    Click Element                          name=date_signed   
+    Sleep   1
+    Click Element                          name=period_date_start   
+    Sleep   1
+    Click Element                          name=period_date_end   
+    Sleep   10
+    Click Element                         xpath=(//a[@class='btn btn-success'])
+
+Скасувати закупівлю
+  [Arguments]  ${username}  ${tender_uaid}  ${cancellation_reason}  ${document}  ${new_description}
+  uatenders.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+
+  Click Element                         xpath=(//a[@class='btn btn-danger'])
+  Sleep   1
+  Input text                          name=reason                                     ${cancellation_reason}
+  
+  Sleep   2
+  Choose File     id=cancel-1            ${document}
+  Sleep   3
+  Input text                          name=cancel[descriptions][]                                     ${new_description}
+  
+  Click Element                       xpath=//*[@type='submit']
+  Sleep   3
+  Click Element                         xpath=(//a[@class='btn btn btn-info'])
+  
+ Отримати інформацію із документа
+    [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
+    uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+    Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
+    Sleep   3
+    ${doc_name}=   Get Text       xpath=xpath=(//a[@class='doc-download']) 
+    [Return]   ${doc_name}
