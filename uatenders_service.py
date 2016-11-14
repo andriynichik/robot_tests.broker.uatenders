@@ -50,6 +50,12 @@ def convert_auction_date(date):
     localized_date = time_zone.localize(date_obj)
     return localized_date.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
 
+def get_unit_id(string):
+    return {
+        u"послуга": u"9",
+        u"метри квадратні": u"13",
+    }.get(string, string)
+ 
 
  
 def get_file_path():
