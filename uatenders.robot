@@ -96,7 +96,7 @@ ${locator.dgf}                                                  xpath=/html/body
     ${locality}=             Get From Dictionary         ${items[0].deliveryAddress}      locality
     ${streetAddress}=        Get From Dictionary         ${items[0].deliveryAddress}      streetAddress
     ${proc_name}=             Get From Dictionary         ${ARGUMENTS[1].data.procuringEntity}   name
-  
+    ${unit_id} =              get_unit_id                 ${unit}
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   Maximize Browser Window
     Sleep  1
@@ -133,7 +133,7 @@ ${locator.dgf}                                                  xpath=/html/body
   Sleep  3
   Wait Until Page Contains Element    name=lots[0][items][0][unit_id]
   Click Element                       name=lots[0][items][0][unit_id]
-  Select From List                    xpath=//select[@name="lots[0][items][0][unit_id]"]          9
+  Select From List                    xpath=//select[@name="lots[0][items][0][unit_id]"]          ${unit_id}
 
   Sleep  11
   Input text                          name=lots[0][items][0][cav]   ${cav_id}
