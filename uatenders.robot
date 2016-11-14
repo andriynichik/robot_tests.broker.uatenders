@@ -46,7 +46,10 @@ ${locator.items[0].classification.scheme}                       xpath=(//span[@c
 ${locator.items[0].classification.id}                           xpath=(//span[@class='id'])
 ${locator.items[0].classification.description}                  xpath=(//span[@class='description'])
 ${locator.dgf}                                                  xpath=/html/body/div[1]/div[1]/div[4]/div/div[1]/div/div/b
-
+${locator.cancellations[0].status}                             xpath=(//table[@class='clean-table']/tbody/tr[1]/td)[1]
+${locator.cancellations[0].reason}                             xpath=/html/body/div/div/div[3]/div/p
+${locator.cancellations[0].documents[0].title}                 xpath=(//a[@class='doc-download'])
+${locator.cancellations[0].documents[0].description}           xpath=(//span[@class='docDesc'])
 
 
 *** Keywords ***
@@ -411,22 +414,22 @@ Change_date_to_month
 
 отримати інформацію про enquiryPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   enquiryPeriod.startDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=   convert_auction_date   ${return_value}
   [return]  ${return_value}
 
 отримати інформацію про enquiryPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   enquiryPeriod.endDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=   convert_auction_date   ${return_value}
   [return]  ${return_value}
 
 отримати інформацію про tenderPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   tenderPeriod.startDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=   convert_auction_date   ${return_value}
   [return]  ${return_value}
 
 отримати інформацію про tenderPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   tenderPeriod.endDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=   convert_auction_date   ${return_value}
   [return]  ${return_value}
 
 отримати інформацію про minimalStep.amount
@@ -706,3 +709,35 @@ Change_date_to_month
     Sleep   3
     ${doc_name}=   Get Text       xpath=xpath=(//a[@class='doc-download']) 
     [Return]   ${doc_name}
+    
+ Отримати інформацію про cancellations[0].status
+  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].status
+  ${return_value}=   convert to string     ${return_value}
+  ${return_value}=   convert_uatenders_string_to_common_string    ${return_value}
+  [return]  ${return_value}
+
+Отримати інформацію про cancellations[0].reason
+  Sleep   3
+  Reload Page
+  Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
+  Sleep   3
+  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].reason
+  [return]  ${return_value}
+
+Отримати інформацію про cancellations[0].documents[0].title
+  Sleep   3
+  Reload Page
+  Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
+  Sleep   3
+  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].documents[0].title}
+  [return]  ${return_value}
+
+Отримати інформацію про cancellations[0].documents[0].description
+  Sleep   3
+  Reload Page
+  Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
+  Sleep   3
+  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].description
+  [return]  ${return_value}
+
+
