@@ -715,7 +715,7 @@ Change_date_to_month
     uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
     Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
     Sleep   3
-    ${doc_name}=   Get Text       xpath=xpath=(//a[@class='doc-download']) 
+    ${doc_name}=   Get Text       xpath=(//a[@class='doc-download']) 
     [Return]   ${doc_name}
 
 Отримати інформацію про cancellations[0].status
