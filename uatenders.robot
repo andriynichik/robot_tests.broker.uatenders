@@ -46,6 +46,7 @@ ${locator.items[0].classification.scheme}                       xpath=(//span[@c
 ${locator.items[0].classification.id}                           xpath=(//span[@class='id'])
 ${locator.items[0].classification.description}                  xpath=(//span[@class='description'])
 ${locator.dgf}                                                  xpath=/html/body/div[1]/div[1]/div[4]/div/div[1]/div/div/b
+
 ${locator.cancellations[0].status}                             xpath=(//table[@class='clean-table']/tbody/tr[1]/td)[1]
 ${locator.cancellations[0].reason}                             xpath=/html/body/div/div/div[3]/div/p
 ${locator.cancellations[0].documents[0].title}                 xpath=(//a[@class='doc-download'])
@@ -138,6 +139,7 @@ ${locator.cancellations[0].documents[0].description}           xpath=(//span[@cl
   Click Element                       name=lots[0][items][0][unit_id]
   Select From List                    xpath=//select[@name="lots[0][items][0][unit_id]"]          ${unit_id}
 
+
   Sleep  11
   Input text                          name=lots[0][items][0][cav]   ${cav_id}
   Wait Until Page Contains Element       xpath=//li[@class='ui-menu-item']
@@ -195,9 +197,12 @@ ${locator.cancellations[0].documents[0].description}           xpath=(//span[@cl
   Sleep  3
   Run Keyword And Ignore Error    Click Element                       xpath=//*[@id="self_eligible"]
   Sleep  3
-  Click Element                       xpath=//*[@type='submit']
+  Click Element                       xpath=//*[@type='submit'] 
   Sleep  10
-  Capture Page Screenshot
+  Click Element                       xpath=/html/body/div/div[2]/div[1]/table/tbody/tr[2]/td[9]/a/span
+  Sleep  3
+  Click Element                       xpath=//a[@class="btn btn-success"]
+ 
 
 скасувати цінову пропозицію
   [Arguments]  @{ARGUMENTS} 
@@ -231,7 +236,7 @@ ${locator.cancellations[0].documents[0].description}           xpath=(//span[@cl
     Sleep  2
     Click Element                       xpath=//*[@type='submit']
     Sleep  8
-    Capture Page Screenshot
+    
 
 Завантажити документ в ставку
     [Arguments]  @{ARGUMENTS}
@@ -289,7 +294,7 @@ ${locator.cancellations[0].documents[0].description}           xpath=(//span[@cl
   Choose File       id=tender-1       ${filepath}
   Sleep  5
   Click Element                       xpath=//*[@type='submit']
-  Capture Page Screenshot
+  
 
 Внести зміни в тендер
   [Arguments]  @{ARGUMENTS}
@@ -388,13 +393,13 @@ ${locator.cancellations[0].documents[0].description}           xpath=(//span[@cl
 
 отримати інформацію про auctionPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   auctionPeriod.startDate
-  ${return_value}=  convert_auction_date     ${return_value}
+  ${return_value}=            convert_auction_date     ${return_value}
 
   [return]  ${return_value}
 
 Отримати інформацію про auctionPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   auctionPeriod.endDate
-  ${return_value}= convert_auction_date    ${return_value}
+  ${return_value}=            convert_auction_date    ${return_value}
 
   [return]  ${return_value}
 
@@ -414,22 +419,25 @@ Change_date_to_month
 
 отримати інформацію про enquiryPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   enquiryPeriod.startDate
-  ${return_value}=   convert_auction_date   ${return_value}
+  ${return_value}=   Change_date_to_month   ${return_value}
   [return]  ${return_value}
 
 отримати інформацію про enquiryPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   enquiryPeriod.endDate
   ${return_value}=   convert_auction_date   ${return_value}
+  Log To Console  ${return_value}
   [return]  ${return_value}
 
 отримати інформацію про tenderPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   tenderPeriod.startDate
   ${return_value}=   convert_auction_date   ${return_value}
+  Log To Console  ${return_value}
   [return]  ${return_value}
 
 отримати інформацію про tenderPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   tenderPeriod.endDate
   ${return_value}=   convert_auction_date   ${return_value}
+  Log To Console  ${return_value}
   [return]  ${return_value}
 
 отримати інформацію про minimalStep.amount
@@ -709,8 +717,8 @@ Change_date_to_month
     Sleep   3
     ${doc_name}=   Get Text       xpath=xpath=(//a[@class='doc-download']) 
     [Return]   ${doc_name}
-    
- Отримати інформацію про cancellations[0].status
+
+Отримати інформацію про cancellations[0].status
   ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].status
   ${return_value}=   convert to string     ${return_value}
   ${return_value}=   convert_uatenders_string_to_common_string    ${return_value}
@@ -729,7 +737,7 @@ Change_date_to_month
   Reload Page
   Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
   Sleep   3
-  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].documents[0].title}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].documents[0].title
   [return]  ${return_value}
 
 Отримати інформацію про cancellations[0].documents[0].description
@@ -737,7 +745,6 @@ Change_date_to_month
   Reload Page
   Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
   Sleep   3
-  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].description
+  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].documents[0].description
   [return]  ${return_value}
-
 
