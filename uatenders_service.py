@@ -18,10 +18,13 @@ def convert_uatenders_string_to_common_string(string):
         u"(Враховуючи ПДВ)": True,
         u"Картонки": u"Картонні коробки",
         u"Аукціон відмінено": u"active",
-        u"Аукціон не відбувся": u"unsuccessful",
+        u"Аукціон завершено": u"complete",
         u"Період уточнень": u"active.enquiries",
+        u"Аукціон не відбувся": u"unsuccessful",
         u"Очікування пропозицій": u"active.tendering",
         u"Період аукціону": u"active.auction",
+        u"Кваліфікація переможця": u"active.qualification",
+
     }.get(string, string)
 
 def convert_datetime_for_delivery(isodate):
@@ -55,8 +58,6 @@ def get_unit_id(string):
         u"послуга": u"9",
         u"метри квадратні": u"13",
     }.get(string, string)
- 
-
  
 def get_file_path():
     return os.path.join(os.getcwd(), 'src/robot_tests.broker.uatenders/fileupload.txt')
