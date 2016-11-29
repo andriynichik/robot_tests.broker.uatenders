@@ -212,7 +212,6 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   ${bid}=        Get From Dictionary   ${ARGUMENTS[2].data.value}         amount
   ${bid} =            Convert To String           ${bid}
   Sleep  3
-
   Reload Page
   Click Element     xpath=//*[text()='Подати пропозицію'] 
   Sleep  10
@@ -222,12 +221,23 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   Sleep  3
   Click Element                       xpath=//*[@type='submit'] 
   Sleep  10
+  ${is_qualified}=  is_qualified  ${ARGUMENTS[2]}    ${ARGUMENTS[0]}
+  Run Keyword If  ${is_qualified} == False
+  ...  Fail  "Неможливо подати пропозицію без кваліфікації"
   Run Keyword And Ignore Error    Click Element                       xpath=(//a[@class='confirmOrganizationLink'])
   Sleep  1
+  Input text                          name=amount     ${bid}
+  Sleep  3
+  Run Keyword And Ignore Error    Click Element                       xpath=//*[@id="self_eligible"]
+  Sleep  3
+  Click Element                       xpath=//*[@type='submit'] 
+  Sleep  10
+  Sleep  3
   Click Element                       xpath=/html/body/div/div[2]/div[1]/table/tbody/tr[2]/td[9]/a/span
   Sleep  3
   Click Element                       xpath=//a[@class="btn btn-success"]
- 
+
+
 
 скасувати цінову пропозицію
   [Arguments]  @{ARGUMENTS} 
@@ -266,6 +276,7 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
 Завантажити документ в ставку
   [Arguments]  ${username}  ${filePath}  ${tender_uaid}
   ${filepyth}=                              get_file_path
+    Reload Page
     Sleep   5
     Click Element               xpath=//*[text()='Додати файл']
     Sleep   2
@@ -279,7 +290,9 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
     ...    ${ARGUMENTS[1]} ==  file
     ...    ${ARGUMENTS[2]} ==  tenderId
     ${filepyth}=                              get_file_path
+    Reload Page
     Sleep   5
+
     Click Element               xpath=//*[text()='Додати файл']
     Sleep   2
     Choose File     id=bid-1            ${filepyth}
@@ -652,6 +665,7 @@ Change_date_to_month
 отримати інформацію про questions[1].answer
   Wait Until Page Contains Element    xpath=//*[@id="lot-0"]/div[2]/div/div/table/tbody/tr/td[2]/div[1]/div/ul/li[3]/a
   Click Element                       xpath=//*[@id="lot-0"]/div[2]/div/div/table/tbody/tr/td[2]/div[1]/div/ul/li[3]/a
+  Sleep   3
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[1].answer
   [return]  ${return_value}
 
@@ -756,12 +770,12 @@ Change_date_to_month
   Sleep   3
   Click Element                         xpath=(//a[@class='btn btn btn-info'])
   
- Отримати інформацію із документа
-    [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
-    uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
-    Sleep   3
-    ${doc_name}=   Get Text         xpath=(//a[@class='doc-download ']) 
-    [Return]   ${doc_name}
+Отримати інформацію із документа
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
+  uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Sleep   3
+  ${doc_value}=  Get Text       xpath=//a[contains(text(),'${doc_id}')]
+  [return]  ${doc_value}
 
 Отримати інформацію про cancellations[0].status
   ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].status
@@ -861,9 +875,12 @@ Change_date_to_month
 
 Отримати документ
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
-  uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
-  Log To Console  ${doc_id}
-  Click Element                       xpath=(//a[@class='doc-download '])
+  ${file_name}=       Get Text     xpath=//a[contains(text(),'${doc_id}')]
+  Log To Console  ${file_name}
+  ${url}=         Get Element Attribute   xpath=//a[contains(text(),'${doc_id}')]@href
+  Log To Console  ${url}
+  download   ${url}  ${file_name}  ${OUTPUT_DIR}
+  [return]  ${file_name} 
   
 
 Завантажити фінансову ліцензію
