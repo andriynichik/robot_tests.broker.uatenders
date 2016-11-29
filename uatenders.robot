@@ -264,14 +264,12 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
     
 
 Завантажити документ в ставку
-    [Arguments]  @{ARGUMENTS}
-    [Documentation]
-    ...     ${ARGUMENTS[1]} ==  file
-    ...    ${ARGUMENTS[2]} ==  tenderId
+  [Arguments]  ${username}  ${filePath}  ${tender_uaid}
+  ${filepyth}=                              get_file_path
     Sleep   5
     Click Element               xpath=//*[text()='Додати файл']
     Sleep   2
-    Choose File     id=bid-1            ${ARGUMENTS[1]}
+    Choose File     id=bid-1            ${filepyth}
     sleep   3
     Click Element                       xpath=//*[@type='submit']
 
@@ -280,10 +278,11 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
     [Documentation]
     ...    ${ARGUMENTS[1]} ==  file
     ...    ${ARGUMENTS[2]} ==  tenderId
+    ${filepyth}=                              get_file_path
     Sleep   5
     Click Element               xpath=//*[text()='Додати файл']
     Sleep   2
-    Choose File     id=bid-1            ${ARGUMENTS[1]}
+    Choose File     id=bid-1            ${filepyth}
     sleep   3
     Click Element                       xpath=//*[@type='submit']
 
@@ -725,7 +724,7 @@ Change_date_to_month
     [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
     ${filepyth}=                              get_file_path
     uatenders.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
-    Click Element     xpath=/html/body/div/div[1]/div[2]/div/ul/li[3]/a
+    Click Element     xpath=/html/body/div/div[1]/div[2]/div/ul/li[4]/a
     sleep   5
     Click Element     xpath=/html/body/div/div/table/tbody/tr/td[2]/a
     sleep   2
@@ -873,6 +872,78 @@ Change_date_to_month
   Click Element               xpath=//*[text()='Редагувати пропозицію']
   Sleep  3
   Choose File                  name=bid[files][]       ${filepath}
+
+  Select From List                    name=bid[docTypes][]         12
+
   Sleep  2
   Click Element                       xpath=//*[@type='submit']
 
+Скасування рішення кваліфікаційної комісії
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+  uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Sleep  2
+  Click Element                     xpath=(//a[@class='btn btn-warning'])
+  Sleep  2
+  Click Element                     xpath=/html/body/div/div/div[3]/div/a
+    
+Завантажити документ рішення кваліфікаційної комісії
+  [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
+  uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Sleep  2
+  Click Element                     xpath=(//a[@class='btn btn-warning'])
+  Sleep   2
+  Click Element                     xpath=//*[text()='Додати файл']
+  Sleep   2
+  Choose File     id=award-0-1            ${document}
+  sleep   3
+  Click Element                       xpath=//*[@type='submit']
+
+Дискваліфікувати постачальника
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
+  uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Sleep  2
+  Click Element                     xpath=(//a[@class='btn btn-warning'])
+  Sleep  2
+  Click Element                     xpath=/html/body/div/div/div[3]/div/a[2]
+  Sleep  2
+  Input text                           name=unsuccessful_title  ${award_num}
+  Input text                           name=unsuccessful_description  ${description}
+  Click Element                       xpath=//*[@type='submit']  
+
+Завантажити угоду до тендера
+  [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
+  uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Sleep  2
+  Click Element                     xpath=/html/body/div/div[1]/div[2]/div/ul/li[4]/a
+  Sleep  2
+  Click Element                     xpath=/html/body/div/div/table/tbody/tr/td[2]/a
+  Sleep  2
+  Click Element                     xpath=//*[text()='Додати файл']
+  Sleep  2
+  Choose File         name=contract[files][]            ${filepath}
+  Sleep  2
+  Click Element                       xpath=//*[@type='submit']
+
+
+Отримати кількість документів в ставці
+  [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
+  uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Sleep  2
+  Click Element                     xpath=(//a[@class='btn btn-warning'])
+  Sleep  2
+  ${return_value}=                  Get Text  xpath=/html/body/div/div/div[3]/div/div/table/tbody/tr[9]/td/p/span
+  [Return]  ${return_value}
+  
+  
+Завантажити протокол аукціону
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+  uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Sleep  2
+  Click Element               xpath=//*[text()='Редагувати пропозицію']
+  Sleep  3
+  Choose File                  name=bid[files][]       ${filepath}
+
+  Select From List                    name=bid[docTypes][]         15
+
+  Sleep  2
+  Click Element                       xpath=//*[@type='submit']
