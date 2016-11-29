@@ -3,6 +3,7 @@ import pytz
 from iso8601 import parse_date
 from datetime import datetime, timedelta
 import os
+import urllib
 
 def get_all_uatenders_dates(tender_data):
     return {
@@ -17,7 +18,7 @@ def convert_uatenders_string_to_common_string(string):
         u"(Не враховуючи ПДВ)": False,
         u"(Враховуючи ПДВ)": True,
         u"Картонки": u"Картонні коробки",
-        u"Аукціон відмінено": u"active",
+        u"Аукціон відмінено": u"cancelled",
         u"Аукціон завершено": u"complete",
         u"Період уточнень": u"active.enquiries",
         u"Аукціон не відбувся": u"unsuccessful",
@@ -61,3 +62,13 @@ def get_unit_id(string):
  
 def get_file_path():
     return os.path.join(os.getcwd(), 'src/robot_tests.broker.uatenders/fileupload.txt')
+
+def download(url, file_name, output_dir):
+    urllib.urlretrieve(url, ('{}/{}'.format(output_dir, file_name)))
+
+
+def is_qualified(bid_data, username):
+    if username == 'uatenders_Provider':
+        if 'qualified' in bid_data['data']:
+            return False
+    return True
