@@ -156,7 +156,7 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   Sleep  10
   Sleep  5
   Click Element                       xpath=//*[text()='Опублікувати']
-  Sleep  40
+  Sleep  60
   Reload Page
 
   Sleep  2
@@ -886,7 +886,7 @@ Change_date_to_month
   Sleep  3
   Choose File                  name=bid[files][]       ${filepath}
 
-  Select From List                    name=bid[docTypes][]         12
+  Select From List                    name=bid[docTypes][]         14
 
   Sleep  2
   Click Element                       xpath=//*[@type='submit']
@@ -942,7 +942,7 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
   uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Sleep  2
-  Click Element                     xpath=(//a[@class='btn btn-warning'])
+  Click Element                      xpath=(//a[@class='xh-highlight'])
   Sleep  2
   ${return_value}=                  Get Text  xpath=/html/body/div/div/div[3]/div/div/table/tbody/tr[9]/td/p/span
   [Return]  ${return_value}
