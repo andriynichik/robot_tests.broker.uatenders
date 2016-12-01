@@ -53,9 +53,9 @@ ${locator.items[0].classification.id}                           xpath=(//span[@c
 ${locator.items[0].classification.description}                  xpath=(//span[@class='description'])
 ${locator.dgf}                                                  xpath=(//b[@class='dgfLotID'])
 
-${locator.cancellations[0].status}                             xpath=(//table[@class='clean-table']/tbody/tr[1]/td)[1]
+${locator.cancellations[0].status}                             xpath=(//p[@class='cancellationStatus'])
 ${locator.cancellations[0].reason}                             xpath=/html/body/div/div/div[3]/div/p
-${locator.cancellations[0].documents[0].title}                 xpath=(//a[@class='doc-download'])
+${locator.cancellations[0].documents[0].title}                 xpath=(//a[@class='doc-download '])
 ${locator.cancellations[0].documents[0].description}           xpath=(//span[@class='docDesc'])
 ${locator.eligibilityCriteria}                                 xpath=(//td[@class='eligibilityCriteria'])
 
@@ -770,10 +770,17 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
   uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Sleep   3
-  ${doc_value}=  Get Text       xpath=//a[contains(text(),'${doc_id}')]
+  Log To Console  '${TEST_NAME}'
+
+  Run Keyword if   'скасування лоту' in '${TEST_NAME}'   Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
+  ${doc_value}=  Get Text       xpath=//a[contains(text(),'${doc_id}')] 
   [return]  ${doc_value}
 
 Отримати інформацію про cancellations[0].status
+  Sleep   3
+  Reload Page
+  Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
+  Sleep   3
   ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].status
   ${return_value}=   convert to string     ${return_value}
   ${return_value}=   convert_uatenders_string_to_common_string    ${return_value}
@@ -792,7 +799,7 @@ Change_date_to_month
   Reload Page
   Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
   Sleep   3
-  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].documents[0].title
+  ${return_value}=   Get text   xpath=(//a[@class='doc-download '])
   [return]  ${return_value}
 
 Отримати інформацію про cancellations[0].documents[0].description
@@ -800,7 +807,7 @@ Change_date_to_month
   Reload Page
   Click Element                 xpath=/html/body/div/div[1]/div[2]/div/ul/li[2]/a
   Sleep   3
-  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].documents[0].description
+  Отримати текст із поля і показати на сторінці   cancellations[0].documents[0].description
   [return]  ${return_value}
 
 Додати Virtual Data Room
@@ -873,6 +880,7 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
   ${file_name}=       Get Text     xpath=//a[contains(text(),'${doc_id}')]
   Log To Console  ${file_name}
+
   ${url}=         Get Element Attribute   xpath=//a[contains(text(),'${doc_id}')]@href
   Log To Console  ${url}
   download   ${url}  ${file_name}  ${OUTPUT_DIR}
