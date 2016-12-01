@@ -281,8 +281,9 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
     Click Element               xpath=//*[text()='Додати файл']
     Sleep   2
     Choose File     id=bid-1            ${filepyth}
-    sleep   3
+    sleep   60
     Click Element                       xpath=//*[@type='submit']
+
 
 Змінити документ в ставці
     [Arguments]  @{ARGUMENTS}
@@ -296,8 +297,9 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
     Click Element               xpath=//*[text()='Додати файл']
     Sleep   2
     Choose File     id=bid-1            ${filepyth}
-    sleep   3
+    sleep   60
     Click Element                       xpath=//*[@type='submit']
+
 
 Відповісти на питання
   Sleep   20
@@ -326,6 +328,7 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   Choose File       id=tender-1       ${file} 
   Sleep  5
   Click Element                       xpath=//*[@type='submit']
+  sleep   10
   
 
 Внести зміни в тендер
@@ -764,7 +767,7 @@ Change_date_to_month
   Input text                          name=cancel[descriptions][]                                     ${new_description}
   
   Click Element                       xpath=//*[@type='submit']
-  Sleep   3
+  Sleep   60
   Click Element                         xpath=(//a[@class='btn btn btn-info'])
   
 Отримати інформацію із документа
@@ -919,6 +922,7 @@ Change_date_to_month
   Choose File     id=award-0-1            ${document}
   sleep   3
   Click Element                       xpath=//*[@type='submit']
+  sleep   10
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
@@ -943,17 +947,19 @@ Change_date_to_month
   Click Element                     xpath=//*[text()='Додати файл']
   Sleep  2
   Choose File         name=contract[files][]            ${filepath}
-  Sleep  2
+  Sleep  20
   Click Element                       xpath=//*[@type='submit']
+
 
 
 Отримати кількість документів в ставці
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
   uatenders.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Sleep  2
-  Click Element                      xpath=(//a[@class='xh-highlight'])
+  Click Element                      xpath=//*[text()='Пропозиції ']
   Sleep  2
-  ${return_value}=                  Get Text  xpath=/html/body/div/div/div[3]/div/div/table/tbody/tr[9]/td/p/span
+  ${return_value}=                  Get Text  xpath=(//span[@class='bidDocCount'])
+  Log To Console  ${return_value}
   [Return]  ${return_value}
   
   
@@ -969,3 +975,16 @@ Change_date_to_month
 
   Sleep  2
   Click Element                       xpath=//*[@type='submit']
+
+Отримати дані із документу пропозиції
+  [Arguments]  ${user_name}  ${tender_id}  ${bid_index}  ${document_index}  ${field}
+
+  Log To Console   ${bid_index}
+  Log To Console   ${document_index}
+  Log To Console   ${field}
+  ${return_value}=                  Get Text  xpath=(//span[@id=${document_index}])
+ 
+  Log To Console   ${return_value}
+  [Return]       ${return_value}
+
+  
