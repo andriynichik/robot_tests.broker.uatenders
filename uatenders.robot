@@ -726,7 +726,7 @@ Change_date_to_month
     Click Element                       xpath=//*[@type='submit']
 
     sleep   10
-    Click Element                     xpath=(//a[@class='btn btn-xm btn-success'])
+    Click Element                     xpath=/html/body/div/div/div[3]/div/a[1]
 
 
 
@@ -734,7 +734,8 @@ Change_date_to_month
     [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
     ${filepyth}=                              get_file_path
     uatenders.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
-    Click Element     xpath=/html/body/div/div[1]/div[2]/div/ul/li[4]/a
+    sleep   2
+    Click Element     xpath=(//a[@class='main_contract'])
     sleep   5
     Click Element     xpath=/html/body/div/div/table/tbody/tr/td[2]/a
     sleep   2
