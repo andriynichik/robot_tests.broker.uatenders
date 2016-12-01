@@ -18,7 +18,7 @@ def convert_uatenders_string_to_common_string(string):
         u"(Не враховуючи ПДВ)": False,
         u"(Враховуючи ПДВ)": True,
         u"Картонки": u"Картонні коробки",
-        u"Аукціон відмінено": u"active",
+        u"Аукціон відмінено": u"cancelled",
         u"Аукціон завершено": u"complete",
         u"Період уточнень": u"active.enquiries",
         u"Аукціон не відбувся": u"unsuccessful",
