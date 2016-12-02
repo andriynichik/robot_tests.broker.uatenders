@@ -156,7 +156,7 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   Sleep  10
   Sleep  5
   Click Element                       xpath=//*[text()='Опублікувати']
-  Sleep  60
+  Sleep  120
   Reload Page
 
   Sleep  2
@@ -275,7 +275,9 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
 
 Завантажити документ в ставку
   [Arguments]  ${username}  ${filePath}  ${tender_uaid}
+
   ${filepyth}=                              get_file_path
+  Run Keyword if   'Неможливість' in '${TEST_NAME}'        uatenders.Пошук тендера по ідентифікатору  ${username}   ${tender_uaid}
     Reload Page
     Sleep   5
     Click Element               xpath=//*[text()='Додати файл']
@@ -322,7 +324,10 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
 
 Завантажити документ
   [Arguments]   ${username}  ${file}  ${tender_uaid}
-  
+  Log To Console  ${tender_uaid}
+
+  Reload Page
+  Sleep  2
   ${filepyth}=                              get_file_path
   Sleep  2
   Choose File       id=tender-1       ${file} 
@@ -983,7 +988,7 @@ Change_date_to_month
   Log To Console   ${document_index}
   Log To Console   ${field}
   ${return_value}=                  Get Text  xpath=(//span[@id=${document_index}])
- 
+
   Log To Console   ${return_value}
   [Return]       ${return_value}
 
