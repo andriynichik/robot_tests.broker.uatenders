@@ -116,9 +116,10 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   Sleep  1
   Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[2]/li[1]/ul/li[2]/a
   Input text                          name=name   ${proc_name}
+  Input text                          name=legal_name     ${proc_name}
   Click Element                       xpath=//*[@type='submit']
   Sleep  5
-  
+  Capture Page Screenshot
   Wait Until Page Contains Element       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[1]/a          9 
   Sleep  1
   Click Element                       xpath=//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[1]/a
@@ -236,7 +237,8 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   Click Element                       xpath=/html/body/div/div[2]/div[1]/table/tbody/tr[2]/td[9]/a/span
   Sleep  3
   Click Element                       xpath=//a[@class="btn btn-success"]
-
+  
+  Click Element                       xpath=//*[@id="l_msg"]/a/span/span[3]
 
 
 скасувати цінову пропозицію
@@ -610,18 +612,22 @@ Change_date_to_month
   [Arguments]  @{ARGUMENTS}
   uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep   3
+  Capture Page Screenshot
+  Reload Page
+  Sleep   3
   ${url}=  Get Element Attribute  xpath=//*[text()='Перейти до аукціону']@href
   ${url}=   convert to string   ${url}
- 
   [return]  ${url}
 
 Отримати посилання на аукціон для учасника
   [Arguments]  @{ARGUMENTS}
   uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep   3
+  Capture Page Screenshot
+  Reload Page
+  Sleep   3
   ${url}=  Get Element Attribute  xpath=//*[text()='Перейти до аукціону']@href
   ${url}=   convert to string   ${url}
-  
   [return]  ${url}
 
 
