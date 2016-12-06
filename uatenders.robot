@@ -237,8 +237,7 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   Click Element                       xpath=/html/body/div/div[2]/div[1]/table/tbody/tr[2]/td[9]/a/span
   Sleep  3
   Click Element                       xpath=//a[@class="btn btn-success"]
-  
-  Click Element                       xpath=//*[@id="l_msg"]/a/span/span[3]
+
 
 
 скасувати цінову пропозицію
@@ -315,8 +314,9 @@ ${locator.eligibilityCriteria}                                 xpath=(//td[@clas
   ...      ${ARGUMENTS[2]} = 0
   ...      ${ARGUMENTS[3]} = answer_data
   ${answer}=     Get From Dictionary  ${ARGUMENTS[3].data}  answer
-  Click Element      xpath=/html/body/div[2]/div[1]/div[2]/div/ul/li[2]/a
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
+  Run Keyword if   'запитання на лот' in '${TEST_NAME}'               Click Element              xpath=//a[@class="questionItem"]
+  Run Keyword if   'запитання на всі предмети' in '${TEST_NAME}'      Click Element      xpath=//a[@class="auctionQuestionList"]
+  Sleep   5
   Click Element     xpath=//*[text()='Відповісти']
   Input text                          name=answer   ${answer}
   Click Element                       xpath=//*[@type='submit']
