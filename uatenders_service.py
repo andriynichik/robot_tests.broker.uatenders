@@ -26,8 +26,13 @@ def convert_uatenders_string_to_common_string(string):
         u"Період аукціону": u"active.auction",
         u"Кваліфікація переможця": u"active.qualification",
         u"Пропозиції розглянуто": u"active",
-        
-        
+        u"майна банків": u"dgfOtherAssets",
+        u"прав вимоги за кредитами": u"dgfFinancialAssets",
+        u"x_nda": u"19",
+        u"tenderNotice": u"1",
+        u"x_presentation": u"18",
+        u"technicalSpecifications": u"2",
+            
 
     }.get(string, string)
 
@@ -58,11 +63,12 @@ def convert_auction_date(date):
     return localized_date.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
 
 def get_unit_id(string):
-    return {
+     return {
         u"послуга": u"9",
         u"метри квадратні": u"13",
     }.get(string, string)
- 
+
+
 def get_file_path():
     return os.path.join(os.getcwd(), 'src/robot_tests.broker.uatenders/fileupload.txt')
 
@@ -75,3 +81,16 @@ def is_qualified(bid_data, username):
         if 'qualified' in bid_data['data']:
             return False
     return True
+
+def get_dgf(dgfdate):
+    newDate = datetime.strptime(dgfdate, "%Y-%m-%d")
+    return newDate.strftime("%d.%m.%Y")
+
+def getIndex(attr):
+    return attr[-1]
+
+def get_question_locator(string):
+     return {
+        u"title": u"questionTitle-",
+        u"description": u"questionDesc-",
+    }.get(string, string)
