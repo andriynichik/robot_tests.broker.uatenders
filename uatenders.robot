@@ -712,17 +712,14 @@ Change_date_to_month
   uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep   3
   Capture Page Screenshot
-  Reload Page
-  Sleep   3
   ${url}=  Get Element Attribute  xpath=//*[text()='Перейти до аукціону']@href
   ${url}=   convert to string   ${url}
   [return]  ${url}
 
 Отримати посилання на аукціон для учасника
   [Arguments]  @{ARGUMENTS}
-  Capture Page Screenshot
-  Reload Page
-  Sleep   3
+  uatenders.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  Sleep   1
   ${url}=  Get Element Attribute  xpath=//*[text()='Перейти до аукціону']@href
   ${url}=   convert to string   ${url}
   [return]  ${url}
